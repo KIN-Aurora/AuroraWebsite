@@ -149,7 +149,7 @@
       loadingSpinner.classList.remove('hidden');
       confirmBtn.classList.add('hidden');
 
-      await new Promise(resolve => setTimeout(resolve, 3500));
+      await new Promise(resolve => setTimeout(resolve, 10000));
 
       modalText.textContent = 'Link generated successfully!';
       modalSubtext.textContent = 'Ready to redirect';
@@ -163,7 +163,7 @@
     // [GET KEY] Button -> Keeps the simulated loading popup
     const keyBtn = document.getElementById('key-btn');
     keyBtn.addEventListener('click', () => {
-      showLinkModal('https://jnkie.com/');
+      showLinkModal('https://jnkie.com/get-key/aurora');
     });
 
     // [Discord] Button -> DIRECT REDIRECT (No modal)
