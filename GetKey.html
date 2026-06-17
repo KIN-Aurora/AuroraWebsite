@@ -114,7 +114,6 @@
   </div>
 
   <script>
-    // Generate stars background
     const starsContainer = document.getElementById('stars');
     for (let i = 0; i < 120; i++) {
       const star = document.createElement('div');
@@ -128,7 +127,6 @@
 
     lucide.createIcons();
 
-    // Modal control DOMs
     const modal = document.getElementById('modal');
     const modalText = document.getElementById('modal-text');
     const modalSubtext = document.getElementById('modal-subtext');
@@ -136,7 +134,6 @@
     const confirmBtn = document.getElementById('modal-confirm-btn');
     let pendingUrl = '';
 
-    // Only Key System uses this animation now
     async function showLinkModal(url) {
       pendingUrl = url;
       modal.classList.remove('hidden');
@@ -151,40 +148,52 @@
 
       await new Promise(resolve => setTimeout(resolve, 10000));
 
-      modalText.textContent = 'Link generated successfully!';
-      modalSubtext.textContent = 'Ready to redirect';
-      
-      loadingSpinner.innerHTML = `<i data-lucide="check" style="width:40px;height:40px;color:#00ff00;" class="block"></i>`;
-      lucide.createIcons();
-      
-      confirmBtn.classList.remove('hidden');
+      const lastClickTime = localStorage.getItem('aurora_last_key_time');
+      const currentTime = Date.now();
+      const cooldownPeriod = 5 * 60 * 1000;
+
+      if (lastClickTime && (currentTime - parseInt(lastClickTime) < cooldownPeriod)) {
+        modalText.className = "text-red-400 font-bold tracking-wider text-lg mb-2";
+        modalText.textContent = 'Something went wrong.';
+        modalSubtext.textContent = 'You have already created another link, please try again later.';
+        
+        loadingSpinner.innerHTML = `<i data-lucide="alert-circle" style="width:40px;height:40px;color:#f87171;" class="block"></i>`;
+        lucide.createIcons();
+        
+        confirmBtn.classList.add('hidden');
+      } else {
+        modalText.className = "text-cyan-300 font-bold tracking-wider text-lg mb-2";
+        modalText.textContent = 'Link generated successfully!';
+        modalSubtext.textContent = 'Ready to redirect';
+        
+        loadingSpinner.innerHTML = `<i data-lucide="check" style="width:40px;height:40px;color:#00ff00;" class="block"></i>`;
+        lucide.createIcons();
+        
+        confirmBtn.classList.remove('hidden');
+      }
     }
 
-    // [GET KEY] Button -> Keeps the simulated loading popup
     const keyBtn = document.getElementById('key-btn');
     keyBtn.addEventListener('click', () => {
       showLinkModal('https://jnkie.com/get-key/aurora');
     });
 
-    // [Discord] Button -> DIRECT REDIRECT (No modal)
     const discordBtn = document.getElementById('discord-btn');
     discordBtn.addEventListener('click', () => {
       window.open('https://discord.gg/mPcFDrjTBz', '_blank');
     });
 
-    // [YouTube] Button -> DIRECT REDIRECT (No modal)
     const youtubeBtn = document.getElementById('youtube-btn');
     youtubeBtn.addEventListener('click', () => {
       window.open('https://www.youtube.com/@Kin_Aurora', '_blank');
     });
 
-    // Modal Confirmation Action
     confirmBtn.addEventListener('click', () => {
+      localStorage.setItem('aurora_last_key_time', Date.now().toString());
       modal.classList.add('hidden');
       window.open(pendingUrl, '_blank');
     });
 
-    // Element SDK Settings
     const defaultConfig = {
       main_title: 'KEY SYSTEM',
       button_text: 'GET KEY',
